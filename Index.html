@@ -1,0 +1,408 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.nav button{padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:20px;background:transparent;cursor:pointer;font-size:13px;color:var(--color-text-secondary);transition:all .15s}
+.nav button.active{background:#0F6E56;border-color:#0F6E56;color:#fff}
+.page{display:none}
+.page.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px}
+.kpi{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px 16px}
+.kpi-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.kpi-value{font-size:22px;font-weight:500;color:var(--color-text-primary);line-height:1}
+.kpi-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px}
+.card-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+@media(max-width:600px){.two-col,.three-col{grid-template-columns:1fr}}
+.score-bar-wrap{margin-bottom:10px}
+.score-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;color:var(--color-text-secondary)}
+.score-label span:last-child{font-weight:500;color:var(--color-text-primary)}
+.score-bar{height:7px;border-radius:4px;background:var(--color-background-secondary);overflow:hidden}
+.score-fill{height:100%;border-radius:4px;transition:width .4s}
+.vendor-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.vf-btn{padding:4px 12px;border:0.5px solid var(--color-border-secondary);border-radius:16px;background:transparent;cursor:pointer;font-size:12px;color:var(--color-text-secondary);transition:all .15s}
+.vf-btn.on{color:#fff}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500}
+.badge-green{background:#E1F5EE;color:#0F6E56}
+.badge-amber{background:#FAEEDA;color:#854F0B}
+.badge-red{background:#FCEBEB;color:#A32D2D}
+.badge-blue{background:#E6F1FB;color:#185FA5}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:7px 8px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:11px;font-weight:500;color:var(--color-text-secondary)}
+td{padding:7px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--color-text-secondary);margin-bottom:10px}
+.leg-item{display:flex;align-items:center;gap:5px}
+.leg-sq{width:10px;height:10px;border-radius:2px}
+.radar-wrap{position:relative;width:100%;height:280px}
+.mb14{margin-bottom:14px}
+.two-panel{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.two-panel{grid-template-columns:1fr}}
+</style>
+
+<h2 class="sr-only" style="position:absolute;left:-9999px">Gas Chromatography Technology Comparison Dashboard — interactive consulting dashboard for Kimpex Flow Pvt Ltd</h2>
+
+<div style="padding:1rem 0">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:8px">
+  <div>
+    <div style="font-size:11px;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px">Kimpex Flow Pvt Ltd — Consulting Analysis</div>
+    <div style="font-size:20px;font-weight:500;color:var(--color-text-primary)">Gas Chromatography Technology Dashboard</div>
+  </div>
+  <div style="font-size:11px;color:var(--color-text-secondary);text-align:right">7 vendors · 20 parameters<br>6 application segments</div>
+</div>
+
+<div class="nav" id="mainNav">
+  <button class="active" onclick="showPage('overview')">Overview</button>
+  <button onclick="showPage('comparison')">Vendor comparison</button>
+  <button onclick="showPage('detectors')">TCD vs FID</button>
+  <button onclick="showPage('market')">Market & tenders</button>
+  <button onclick="showPage('standards')">Standards & compliance</button>
+  <button onclick="showPage('qmicro')">Qmicro deep-dive</button>
+</div>
+
+<!-- OVERVIEW PAGE -->
+<div class="page active" id="page-overview">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Vendors compared</div><div class="kpi-value">7</div><div class="kpi-sub">Incl. Chemtron & Honeywell</div></div>
+    <div class="kpi"><div class="kpi-label">Fastest cycle time</div><div class="kpi-value">30s</div><div class="kpi-sub">Qmicro DynamiQ-X</div></div>
+    <div class="kpi"><div class="kpi-label">Longest service life</div><div class="kpi-value">25 yr</div><div class="kpi-sub">Emerson 700XA</div></div>
+    <div class="kpi"><div class="kpi-label">Most compact</div><div class="kpi-value">4L</div><div class="kpi-sub">Qmicro DynamiQ-S</div></div>
+    <div class="kpi"><div class="kpi-label">India tender value (top)</div><div class="kpi-value">₹4.7Cr</div><div class="kpi-sub">CDSCO — Thermo Fisher</div></div>
+    <div class="kpi"><div class="kpi-label">Qmicro market share</div><div class="kpi-value">N/A</div><div class="kpi-sub">Emerging — not public</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Performance scoring — all vendors</div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-sq" style="background:#1D9E75"></div>Speed</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#378ADD"></div>Biogas</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#D85A30"></div>H₂</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#7F77DD"></div>Maintenance</div>
+      </div>
+      <div id="perfScores"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Technology category breakdown</div>
+      <div style="position:relative;width:100%;height:210px"><canvas id="techPie" role="img" aria-label="Pie chart: Process GC 57%, Micro GC 29%, Lab GC 14%">Process GC 4 vendors, Micro GC 2, Lab GC 1.</canvas></div>
+      <div class="legend" style="margin-top:10px">
+        <div class="leg-item"><div class="leg-sq" style="background:#1D9E75"></div>Micro GC (2)</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#378ADD"></div>Process GC (4)</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#7F77DD"></div>Lab GC (1)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Analysis time vs. maintenance complexity — vendor positioning</div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="bubbleChart" role="img" aria-label="Bubble chart of analysis time vs maintenance for 7 GC vendors">Qmicro and Agilent are fast with low maintenance; Emerson and ABB are slower with medium-high maintenance.</canvas></div>
+  </div>
+</div>
+
+<!-- COMPARISON PAGE -->
+<div class="page" id="page-comparison">
+  <div class="card mb14">
+    <div class="card-title">Vendor filter</div>
+    <div class="vendor-filter" id="vfilter"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Full vendor comparison matrix</div>
+    <div style="overflow-x:auto">
+      <table id="compTable"></table>
+    </div>
+  </div>
+</div>
+
+<!-- TCD vs FID PAGE -->
+<div class="page" id="page-detectors">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">TCD detection limit</div><div class="kpi-value">ppm</div><div class="kpi-sub">Medium sensitivity</div></div>
+    <div class="kpi"><div class="kpi-label">FID detection limit</div><div class="kpi-value">ppb</div><div class="kpi-sub">Very high sensitivity</div></div>
+    <div class="kpi"><div class="kpi-label">TCD — destructive?</div><div class="kpi-value">No</div><div class="kpi-sub">Sample preserved</div></div>
+    <div class="kpi"><div class="kpi-label">FID — destructive?</div><div class="kpi-value">Yes</div><div class="kpi-sub">Combustion-based</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title" style="color:#0C447C">TCD — Thermal conductivity detector</div>
+      <div id="tcdRows"></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:#993C1D">FID — Flame ionization detector</div>
+      <div id="fidRows"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Capability comparison — TCD vs FID by compound type</div>
+    <div style="position:relative;width:100%;height:240px"><canvas id="detectorChart" role="img" aria-label="Grouped bar chart comparing TCD and FID across compound types">TCD excels at permanent gases; FID excels at hydrocarbons.</canvas></div>
+    <div class="legend" style="margin-top:10px">
+      <div class="leg-item"><div class="leg-sq" style="background:#378ADD"></div>TCD</div>
+      <div class="leg-item"><div class="leg-sq" style="background:#D85A30"></div>FID</div>
+    </div>
+  </div>
+</div>
+
+<!-- MARKET & TENDERS PAGE -->
+<div class="page" id="page-market">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">India tenders tracked</div><div class="kpi-value">19</div><div class="kpi-sub">Multiple buyers</div></div>
+    <div class="kpi"><div class="kpi-label">Highest bid value</div><div class="kpi-value">₹4.7Cr</div><div class="kpi-sub">CDSCO — Thermo Fisher</div></div>
+    <div class="kpi"><div class="kpi-label">Emerson market share</div><div class="kpi-value">25–30%</div><div class="kpi-sub">Global process GC</div></div>
+    <div class="kpi"><div class="kpi-label">Agilent Micro GC share</div><div class="kpi-value">~50%</div><div class="kpi-sub">In micro GC segment</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">India tender bids — bid value (₹)</div>
+      <div style="position:relative;width:100%;height:260px"><canvas id="tenderChart" role="img" aria-label="Horizontal bar chart of GC tender values in India">CDSCO has the highest tender at ₹4.7 crore.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Global market share — process GC segment</div>
+      <div style="position:relative;width:100%;height:210px"><canvas id="marketChart" role="img" aria-label="Donut chart of global process GC market share">Emerson leads at 25-30%, followed by ABB and Siemens.</canvas></div>
+      <div class="legend" style="margin-top:10px">
+        <div class="leg-item"><div class="leg-sq" style="background:#378ADD"></div>Emerson 27%</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#1D9E75"></div>ABB 22%</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#7F77DD"></div>Siemens 27%</div>
+        <div class="leg-item"><div class="leg-sq" style="background:#D85A30"></div>Honeywell 28%</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Industry preference — GC vs gas analyzer by sector</div>
+    <div id="industryPref"></div>
+  </div>
+</div>
+
+<!-- STANDARDS PAGE -->
+<div class="page" id="page-standards">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Key ISO standards</div><div class="kpi-value">7</div><div class="kpi-sub">Covering GC methods</div></div>
+    <div class="kpi"><div class="kpi-label">Safety certifications</div><div class="kpi-value">7</div><div class="kpi-sub">ATEX, IECEx, PESO…</div></div>
+    <div class="kpi"><div class="kpi-label">SATAT min. frequency</div><div class="kpi-value">5 min</div><div class="kpi-sub">Policy requirement</div></div>
+    <div class="kpi"><div class="kpi-label">Data retention (SATAT)</div><div class="kpi-value">60 days</div><div class="kpi-sub">Min. trend history</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">ISO & analytical standards</div>
+      <table>
+        <tr><th>Standard</th><th>Purpose</th></tr>
+        <tr><td><span class="badge badge-blue">ISO 6974</span></td><td>Natural gas composition — core GC standard</td></tr>
+        <tr><td><span class="badge badge-blue">ISO 6975</span></td><td>Extended analysis by GC method</td></tr>
+        <tr><td><span class="badge badge-blue">ISO 6976</span></td><td>Calorific value, density, Wobbe Index</td></tr>
+        <tr><td><span class="badge badge-blue">ISO 10101</span></td><td>Water content by Karl Fischer</td></tr>
+        <tr><td><span class="badge badge-blue">ISO 13686</span></td><td>Gas quality for custody transfer</td></tr>
+        <tr><td><span class="badge badge-blue">ISO 19739</span></td><td>Sulfur compounds via FPD/PFPD</td></tr>
+        <tr><td><span class="badge badge-blue">ASTM D1945</span></td><td>GC analysis of natural gas (US)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Safety & hazardous area certifications</div>
+      <table>
+        <tr><th>Cert.</th><th>Region / Scope</th></tr>
+        <tr><td><span class="badge badge-amber">ATEX</span></td><td>Europe — explosion-proof equipment</td></tr>
+        <tr><td><span class="badge badge-amber">IECEx</span></td><td>Global hazardous area</td></tr>
+        <tr><td><span class="badge badge-amber">NEC</span></td><td>North America — area classification</td></tr>
+        <tr><td><span class="badge badge-amber">CSA</span></td><td>Canada safety</td></tr>
+        <tr><td><span class="badge badge-amber">UL</span></td><td>North American equipment</td></tr>
+        <tr><td><span class="badge badge-amber">FM</span></td><td>Factory Mutual — US industrial</td></tr>
+        <tr><td><span class="badge badge-red">PESO</span></td><td>India — mandatory for hazardous areas</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">SATAT / PNGRB policy requirements for CBG plants</div>
+    <div id="satatList"></div>
+  </div>
+</div>
+
+<!-- QMICRO PAGE -->
+<div class="page" id="page-qmicro">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Models</div><div class="kpi-value">3</div><div class="kpi-sub">S · X · NG2210/20</div></div>
+    <div class="kpi"><div class="kpi-label">Cycle time</div><div class="kpi-value">15–60s</div><div class="kpi-sub">Fastest in class</div></div>
+    <div class="kpi"><div class="kpi-label">Detection limit</div><div class="kpi-value">500ppb</div><div class="kpi-sub">Micro TCD</div></div>
+    <div class="kpi"><div class="kpi-label">ATEX (DynamiQ-X)</div><div class="kpi-value">Zone 1</div><div class="kpi-sub">OIML R140 Class A</div></div>
+    <div class="kpi"><div class="kpi-label">Weight (X)</div><div class="kpi-value">&lt;15kg</div><div class="kpi-sub">Field deployable</div></div>
+    <div class="kpi"><div class="kpi-label">Max streams</div><div class="kpi-value">4</div><div class="kpi-sub">DynamiQ-X / NG</div></div>
+  </div>
+  <div class="three-col">
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;color:#0F6E56;margin-bottom:8px">DynamiQ-S</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Portable / lab use</div>
+      <table>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">ATEX</td><td style="font-size:11px"><span class="badge badge-red">Not certified</span></td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Streams</td><td style="font-size:11px">3</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Volume</td><td style="font-size:11px">4 L</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">GC units</td><td style="font-size:11px">1–4</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Hazardous</td><td style="font-size:11px"><span class="badge badge-red">No</span></td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Custody transfer</td><td style="font-size:11px"><span class="badge badge-red">No</span></td></tr>
+      </table>
+    </div>
+    <div class="card" style="border-color:#0F6E56;border-width:1.5px">
+      <div style="font-size:11px;background:#E1F5EE;color:#0F6E56;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:6px">Recommended for field</div>
+      <div style="font-size:13px;font-weight:500;color:#0F6E56;margin-bottom:8px">DynamiQ-X</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Process / industrial</div>
+      <table>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">ATEX</td><td style="font-size:11px"><span class="badge badge-green">Zone 1</span></td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Streams</td><td style="font-size:11px">4</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Volume</td><td style="font-size:11px">10 L</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">GC units</td><td style="font-size:11px">1–4</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Hazardous</td><td style="font-size:11px"><span class="badge badge-green">Yes</span></td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Custody transfer</td><td style="font-size:11px"><span class="badge badge-amber">Possible</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;color:#0F6E56;margin-bottom:8px">NG2210 / NG2220</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Natural gas custody transfer</div>
+      <table>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">ATEX</td><td style="font-size:11px"><span class="badge badge-green">Zone 1</span></td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Streams</td><td style="font-size:11px">4</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Cycle (fixed)</td><td style="font-size:11px">45 sec</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">H₂ in NG</td><td style="font-size:11px">NG2220: up to 20%</td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Custody</td><td style="font-size:11px"><span class="badge badge-green">Specifically designed</span></td></tr>
+        <tr><td style="color:var(--color-text-secondary);font-size:11px">Metrology</td><td style="font-size:11px">OIML R140 Class A</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Capability matrix — across Qmicro models</div>
+    <div style="overflow-x:auto">
+    <table>
+      <tr><th>Capability</th><th>DynamiQ-S</th><th>DynamiQ-X</th><th>NG2210</th><th>NG2220</th></tr>
+      <tr><td>C6+ analysis</td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-green">Yes</span></td></tr>
+      <tr><td>BTX</td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-red">No</span></td><td>—</td></tr>
+      <tr><td>Sulfur</td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-red">No</span></td><td>—</td></tr>
+      <tr><td>LPG</td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-red">No</span></td><td>—</td></tr>
+      <tr><td>Biogas</td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-green">Yes</span></td><td><span class="badge badge-red">No</span></td><td>—</td></tr>
+      <tr><td>H₂ in NG</td><td><span class="badge badge-amber">Limited</span></td><td><span class="badge badge-amber">Limited</span></td><td><span class="badge badge-red">No</span></td><td><span class="badge badge-green">Yes (20%)</span></td></tr>
+    </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('#mainNav button').forEach((b,i)=>{
+    b.classList.toggle('active',['overview','comparison','detectors','market','standards','qmicro'][i]===id);
+  });
+}
+
+const vendors=['Qmicro DynamiQ-X','Agilent 990','Emerson 700XA','ABB PGC5000','Siemens MAXUM II','Honeywell ENCal','Chemtron'];
+const vColors=['#1D9E75','#378ADD','#D85A30','#7F77DD','#EF9F27','#D4537E','#888780'];
+const scoreSpeed=[95,85,60,55,60,80,50];
+const scoreBiogas=[95,90,75,70,70,70,90];
+const scoreH2=[95,90,70,65,65,65,65];
+const scoreMaint=[90,90,60,50,65,85,55];
+
+function scoreColor(v){return v>=85?'#1D9E75':v>=65?'#EF9F27':'#D85A30';}
+
+function buildPerfScores(){
+  const el=document.getElementById('perfScores');
+  vendors.slice(0,5).forEach((v,i)=>{
+    const avg=Math.round((scoreSpeed[i]+scoreBiogas[i]+scoreH2[i]+scoreMaint[i])/4);
+    el.innerHTML+=`<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">${v}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+    ${[['Speed',scoreSpeed[i],'#1D9E75'],['Biogas',scoreBiogas[i],'#378ADD'],['H₂',scoreH2[i],'#D85A30'],['Maint.',scoreMaint[i],'#7F77DD']].map(([l,s,c])=>`<div><div class="score-label"><span>${l}</span><span>${s}</span></div><div class="score-bar"><div class="score-fill" style="width:${s}%;background:${c}"></div></div></div>`).join('')}
+    </div></div>`;
+  });
+}
+
+new Chart(document.getElementById('techPie'),{
+  type:'doughnut',
+  data:{labels:['Micro GC','Process GC','Lab GC'],datasets:[{data:[2,4,1],backgroundColor:['#1D9E75','#378ADD','#7F77DD'],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
+});
+
+new Chart(document.getElementById('bubbleChart'),{
+  type:'bubble',
+  data:{datasets:vendors.slice(0,5).map((v,i)=>({label:v,data:[{x:[45,60,5.5,6.5,5.5][i],y:[90,72,60,45,60][i],r:10}],backgroundColor:vColors[i]+'cc',borderColor:vColors[i]}))},
+  options:{responsive:true,maintainAspectRatio:false,layout:{padding:20},
+    scales:{x:{title:{display:true,text:'Avg cycle time (min equiv.)',font:{size:11}},min:0,max:10},y:{title:{display:true,text:'Maintenance ease score',font:{size:11}},min:30,max:100}},
+    plugins:{legend:{display:true,labels:{boxWidth:10,font:{size:11}}}}
+  }
+});
+
+const compParams=['Technology','Analysis time','Size','Carrier gas','Biogas','Hydrogen','Field install','Maintenance','Cost range','Service life','ATEX'];
+const compData=[
+  ['MEMS Micro-GC','30–45s','11.4×10.2×4.8"','<15ml/min','Excellent','Excellent','Excellent','Low','N/A','N/A','Zone 1, IECEx, OIML'],
+  ['Micro-GC','30–90s','11.1×5.7×12.9"','<20ml/min','Excellent','Excellent','Moderate','Low','$15k–$50k','8–10 yr','No ATEX'],
+  ['Process GC','3–8 min','28×17.5"','20–50ml/min','Good','Good','Excellent','Medium','$25k–$120k','15–25 yr','ATEX, IECEx, CSA, FM'],
+  ['Process GC','3–10 min','23.5×16.5×36"','20–40ml/min','Good','Good','Good','Medium-High','$20k–$500k+','20+ yr','ATEX, IECEx, CSA, FM'],
+  ['Process GC','3–8 min','39.7×26×16.1"','25–45ml/min','Good','Good','Good','Medium','$45k–$90k+','15–20 yr','ATEX, IECEx, CSA, FM'],
+  ['Process GC','3 min','14.5×14.5"','Low','Good','Good','Moderate','Low','$25k–$45k','12–15 yr','ATEX, IECEx, CSA, FM'],
+  ['Lab GC','10–20 min','Variable','Low','Excellent','Good','Good','N/A','₹17.5L','N/A','ATEX Zone 1, PESO'],
+];
+const maintenanceBadge={'Low':'badge-green','Medium':'badge-amber','Medium-High':'badge-red','High':'badge-red'};
+const atexBadge={'Zone 1, IECEx, OIML':'badge-green','No ATEX':'badge-red','ATEX, IECEx, CSA, FM':'badge-green','ATEX Zone 1, PESO':'badge-green'};
+
+let activeVendors=[...Array(7).keys()];
+function buildCompTable(){
+  const vf=document.getElementById('vfilter');
+  vf.innerHTML=vendors.map((v,i)=>`<button class="vf-btn on" style="background:${vColors[i]};border-color:${vColors[i]}" onclick="toggleVendor(${i})" id="vb${i}">${v}</button>`).join('');
+  renderCompTable();
+}
+function toggleVendor(i){
+  const idx=activeVendors.indexOf(i);
+  if(idx>=0&&activeVendors.length>1){activeVendors.splice(idx,1);document.getElementById('vb'+i).classList.remove('on');document.getElementById('vb'+i).style.background='transparent';document.getElementById('vb'+i).style.color='var(--color-text-secondary)'}
+  else if(idx<0){activeVendors.push(i);activeVendors.sort();document.getElementById('vb'+i).classList.add('on');document.getElementById('vb'+i).style.background=vColors[i];document.getElementById('vb'+i).style.color='#fff'}
+  renderCompTable();
+}
+function renderCompTable(){
+  const t=document.getElementById('compTable');
+  const av=activeVendors;
+  t.innerHTML=`<tr><th>Parameter</th>${av.map(i=>`<th style="color:${vColors[i]}">${vendors[i]}</th>`).join('')}</tr>`+
+  compParams.map((p,pi)=>`<tr><td style="font-weight:500;font-size:11px;color:var(--color-text-secondary)">${p}</td>${av.map(i=>{
+    const val=compData[i][pi];
+    if(p==='Maintenance'){const cls=maintenanceBadge[val]||'';return`<td><span class="badge ${cls}">${val}</span></td>`}
+    if(p==='ATEX'){const cls=val.includes('No')?'badge-red':'badge-green';return`<td><span class="badge ${cls}" style="font-size:10px">${val}</span></td>`}
+    if(['Biogas','Hydrogen','Field install'].includes(p)){const cls=val==='Excellent'?'badge-green':val==='Good'?'badge-amber':'badge-red';return`<td><span class="badge ${cls}">${val}</span></td>`}
+    return`<td>${val}</td>`;
+  }).join('')}</tr>`).join('');
+}
+
+const tcdData=[['Detects','Almost all gases'],['Permanent gases','Excellent'],['Hydrocarbons','Yes'],['Sulfur compounds','Limited'],['Water vapor','Detectable'],['Detection limit','ppm level'],['Sensitivity','Medium'],['Destructive','No'],['Flame gas needed','No'],['Carrier options','He, H₂, Ar, N₂'],['Maintenance','Very low'],['Field reliability','Excellent'],['Hazardous area','Low complexity']];
+const fidData=[['Detects','Hydrocarbons / organics only'],['Permanent gases','Cannot detect'],['Hydrocarbons','Excellent'],['Sulfur compounds','Good'],['Water vapor','Not detectable'],['Detection limit','ppb level'],['Sensitivity','Very high'],['Destructive','Yes'],['Flame gas needed','Yes (H₂ + Air)'],['Carrier options','Usually He or N₂'],['Maintenance','Moderate'],['Field reliability','Good'],['Hazardous area','Higher complexity']];
+function buildDetectors(){
+  const good=['Very low','Excellent','No','No','ppm level','Almost all gases','He, H₂, Ar, N₂','Low complexity'];
+  document.getElementById('tcdRows').innerHTML=tcdData.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px"><span style="color:var(--color-text-secondary)">${k}</span><span style="font-weight:500;color:${good.includes(v)?'#0F6E56':v.includes('Cannot')||v==='Higher complexity'?'#A32D2D':'var(--color-text-primary)'}">${v}</span></div>`).join('');
+  const fidGood=['ppb level','Excellent','Yes','Moderate','Good'];
+  document.getElementById('fidRows').innerHTML=fidData.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px"><span style="color:var(--color-text-secondary)">${k}</span><span style="font-weight:500;color:${fidGood.includes(v)?'#0F6E56':v.includes('Cannot')||v==='Not detectable'?'#A32D2D':'var(--color-text-primary)'}">${v}</span></div>`).join('');
+}
+new Chart(document.getElementById('detectorChart'),{
+  type:'bar',
+  data:{labels:['Permanent gases','Hydrocarbons','Sulfur compounds','Water vapor','Detection limit','Maintenance'],
+    datasets:[{label:'TCD',data:[95,65,40,70,50,90],backgroundColor:'#378ADD',borderRadius:3},
+              {label:'FID',data:[0,95,70,0,95,60],backgroundColor:'#D85A30',borderRadius:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{font:{size:10},autoSkip:false}},y:{max:100,ticks:{font:{size:10}}}}}
+});
+
+const tenders=[{b:'CDSCO',v:47023161},{b:'Agriculture Dept',v:16195367},{b:'Univ. of Hyderabad',v:15021629},{b:'Excise & Custom',v:8278260},{b:'Bhopal Dairy',v:9742080},{b:'IISER',v:4148332},{b:'NIAB',v:4158436},{b:'ONGC Silchar',v:4993213},{b:'CSIR',v:2959744},{b:'ICAR',v:2324600},{b:'IIT KGP',v:1899650},{b:'NIT Raipur',v:2099053}];
+new Chart(document.getElementById('tenderChart'),{
+  type:'bar',
+  data:{labels:tenders.map(t=>t.b),datasets:[{label:'Bid value (₹)',data:tenders.map(t=>t.v),backgroundColor:'#1D9E75aa',borderColor:'#1D9E75',borderWidth:1,borderRadius:3}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'₹'+Math.round(c.parsed.x/100000)+'L'}}},
+    scales:{x:{ticks:{callback:v=>'₹'+Math.round(v/100000)+'L',font:{size:10}}},y:{ticks:{font:{size:10}}}}}
+});
+new Chart(document.getElementById('marketChart'),{
+  type:'doughnut',
+  data:{labels:['Emerson','ABB','Siemens','Honeywell'],datasets:[{data:[27,22,27,28],backgroundColor:['#378ADD','#1D9E75','#7F77DD','#D85A30'],borderWidth:0,hoverOffset:8}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false}}}
+});
+const industries=[['Natural gas custody transfer','GC'],['LNG','GC'],['Refinery fuel gas','GC'],['Petrochemicals','GC'],['CBG / Biomethane','GC'],['Pipeline energy','GC'],['Stack emissions','Gas Analyzer'],['Boiler O₂ control','Gas Analyzer'],['Flue gas monitoring','Gas Analyzer'],['H₂S monitoring','Gas Analyzer'],['Moisture monitoring','Gas Analyzer']];
+document.getElementById('industryPref').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px">${industries.map(([ind,pref])=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)"><span style="font-size:12px">${ind}</span><span class="badge ${pref==='GC'?'badge-green':'badge-blue'}">${pref}</span></div>`).join('')}</div>`;
+
+const satat=['Online GC/analyzer: min. 1 sample per 5 minutes','Comply with PNGRB regulations and IS 16087 standard','NCV, GCV, Relative Density, Wobbe Index per ISO 6976','Historical trends stored for min. 60 days (local & remote)','GC method analysis per ISO 6974; quality per IS 16087:2025','Uninterrupted power supply with adequate backup','Weekly calibration for Gas Analyser / GC','Records shared with CGD / NGPL network operator','Calibration gas from ISO 17025 accredited laboratory'];
+document.getElementById('satatList').innerHTML=satat.map((s,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px"><span style="background:#E1F5EE;color:#0F6E56;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0">${i+1}</span><span>${s}</span></div>`).join('');
+
+buildPerfScores();
+buildCompTable();
+buildDetectors();
+</script>
